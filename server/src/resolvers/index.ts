@@ -1,1 +1,2 @@
-export * from './testResolver';
+export * from './TestResolver';
+export * from './UserResolver';
