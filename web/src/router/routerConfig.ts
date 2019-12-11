@@ -1,4 +1,4 @@
-import { Home, Register } from '../pages';
+import { Home, Register, Login } from '../pages';
 
 export const routerConfig = {
   defaultRoute: '/home',
@@ -10,6 +10,10 @@ export const routerConfig = {
     {
       path: '/register',
       pageComponent: Register,
+    },
+    {
+      path: '/login',
+      pageComponent: Login,
     },
   ],
 };

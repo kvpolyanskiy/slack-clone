@@ -3,30 +3,26 @@ import { useHistory } from 'react-router-dom';
 
 import { CredentialsForm } from '../../components';
 import { routerConfig } from '../../router';
-import { useRegisterMutation } from '../../generated/graphql';
-import { UsernameField, EmailField, PasswordField } from '../../components/credentials-form';
+import { useLoginMutation } from '../../generated/graphql';
+import { EmailField, PasswordField } from '../../components/credentials-form';
 import { createValidator } from '../../validation/createValidator';
 import { validationSchema } from './validationSchema';
 
-export const Register: React.FC = () => {
-  const [register, {loading, error}] = useRegisterMutation();
+export const Login: React.FC = () => {
+  const [login, {loading, error}] = useLoginMutation();
   const history = useHistory();
 
   const createAccount = useCallback(
-    async ({username, email, password}) => {
+    async ({email, password}) => {
       try {
-        const {
-          data: {register: registered},
-        }: any = await register({variables: {username, email, password}});
-        // TODO: Implement error handling
-        if (registered) {
-          history.push(routerConfig.defaultRoute);
-        }
+        const {data}: any = await login({variables: {email, password}});
+        console.log(data);
+        history.push(routerConfig.defaultRoute);
       } catch {
         return;
       }
     },
-    [register, history],
+    [login, history],
   );
 
   const validate = useMemo(() => createValidator(validationSchema), []);
@@ -35,11 +31,10 @@ export const Register: React.FC = () => {
     <CredentialsForm
       onSubmit={createAccount}
       validate={validate}
-      submitButtonTitle="Create Account"
+      submitButtonTitle="Login"
       disabled={loading}
       error={error && error.message}
     >
-      <UsernameField />
       <EmailField />
       <PasswordField />
     </CredentialsForm>
