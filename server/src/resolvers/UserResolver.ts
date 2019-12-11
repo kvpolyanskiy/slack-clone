@@ -1,34 +1,41 @@
 import { hash, compare } from 'bcryptjs';
 import { Resolver, Mutation, Arg, Ctx } from 'type-graphql';
+import { UserInputError } from 'apollo-server-express';
 
 import { User, LoginResponse } from '../entities';
 import {AuthService } from '../auth';
 import { Context } from '../types';
+import { isUserNameExists, isEmailNameExists } from './utils';
 
 const SALT_LENGTH = 12;
 
 @Resolver()
 export class UserResolver {
-  // TODO: Implement error handling
-  @Mutation(() => Boolean)
+  @Mutation(() => User)
   async register(
     @Arg('username') username: string,
     @Arg('email') email: string,
     @Arg('password') password: string,
   ) {
+    if (await isUserNameExists(username)) {
+      throw new UserInputError('Username already exists.');
+    }
+
+    if (await isEmailNameExists(email)) {
+      throw new UserInputError('Email already exists.');
+    }
+
     const hashedPassword = await hash(password, SALT_LENGTH);
 
     try {
-      await User.insert({
+      return await User.insert({
         username,
         email,
         password: hashedPassword,
       });
     } catch {
-      return false;
+      throw new Error('Something went wrong, try again.');
     }
-
-    return true;
   }
 
   @Mutation(() => LoginResponse)
@@ -41,7 +48,7 @@ export class UserResolver {
     const isValid = await compare(password, user.password);
 
     if (!isValid) {
-      throw new Error('Login or email is not correct');
+      throw new UserInputError('Login or email is not correct.');
     }
 
     AuthService.setRefreshToken(res, AuthService.createRefreshToken(user));
