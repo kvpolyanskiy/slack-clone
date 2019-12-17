@@ -18,9 +18,11 @@ export type LoginResponse = {
 
 export type Mutation = {
    __typename?: 'Mutation',
-  register: Scalars['Boolean'],
+  register: User,
   login: LoginResponse,
   logout: Scalars['Boolean'],
+  createWorkspace: Workspace,
+  removeWorkspace: Workspace,
 };
 
 
@@ -36,9 +38,20 @@ export type MutationLoginArgs = {
   email: Scalars['String']
 };
 
+
+export type MutationCreateWorkspaceArgs = {
+  name: Scalars['String']
+};
+
+
+export type MutationRemoveWorkspaceArgs = {
+  id: Scalars['String']
+};
+
 export type Query = {
    __typename?: 'Query',
   hello: Scalars['String'],
+  workspaces: Array<Workspace>,
 };
 
 export type User = {
@@ -46,6 +59,13 @@ export type User = {
   userId: Scalars['String'],
   username: Scalars['String'],
   email: Scalars['String'],
+};
+
+export type Workspace = {
+   __typename?: 'Workspace',
+  id: Scalars['String'],
+  name: Scalars['String'],
+  ownerId: Scalars['String'],
 };
 
 export type LoginMutationVariables = {
@@ -79,7 +99,10 @@ export type RegisterMutationVariables = {
 
 export type RegisterMutation = (
   { __typename?: 'Mutation' }
-  & Pick<Mutation, 'register'>
+  & { register: (
+    { __typename?: 'User' }
+    & Pick<User, 'userId' | 'username' | 'email'>
+  ) }
 );
 
 
@@ -147,7 +170,11 @@ export type LogoutMutationResult = ApolloReactCommon.MutationResult<LogoutMutati
 export type LogoutMutationOptions = ApolloReactCommon.BaseMutationOptions<LogoutMutation, LogoutMutationVariables>;
 export const RegisterDocument = gql`
     mutation Register($password: String!, $email: String!, $username: String!) {
-  register(username: $username, email: $email, password: $password)
+  register(username: $username, email: $email, password: $password) {
+    userId
+    username
+    email
+  }
 }
     `;
 export type RegisterMutationFn = ApolloReactCommon.MutationFunction<RegisterMutation, RegisterMutationVariables>;

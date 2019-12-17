@@ -26,13 +26,10 @@ export class UserResolver {
     }
 
     const hashedPassword = await hash(password, SALT_LENGTH);
+    const user = await User.create({username, email, password: hashedPassword});
 
     try {
-      return await User.insert({
-        username,
-        email,
-        password: hashedPassword,
-      });
+      return user.save();
     } catch {
       throw new Error('Something went wrong, try again.');
     }
