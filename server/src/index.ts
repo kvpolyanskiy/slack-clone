@@ -2,6 +2,7 @@ import 'dotenv/config';
 import 'reflect-metadata';
 import express from 'express';
 import cors from 'cors';
+import jwt from 'express-jwt';
 import cookieParser from 'cookie-parser';
 import { createConnection } from 'typeorm';
 import { ApolloServer } from 'apollo-server-express';
@@ -17,6 +18,12 @@ import { AuthService } from './auth';
     credentials: true,
   }));
   app.use(cookieParser());
+  app.use(jwt({
+    secret: process.env.ACCESS_TOKEN_SECRET!,
+    getToken: AuthService.getToken,
+    credentialsRequired: false,
+  }));
+
   app.post('/refresh-token', AuthService.refreshToken);
 
   await createConnection();
@@ -27,6 +34,7 @@ import { AuthService } from './auth';
         UserResolver,
         TestResolver,
       ],
+      authChecker: AuthService.isAuth,
     }),
     context: ({req, res}) => ({req, res}),
   });

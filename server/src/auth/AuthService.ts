@@ -1,7 +1,8 @@
 import { Request, Response } from 'express';
+import { AuthChecker } from 'type-graphql';
 import { sign, verify } from 'jsonwebtoken';
 import { User } from '../entities';
-import { Token, TokenResponse } from '../types';
+import { Token, TokenResponse, Context } from '../types';
 
 const SEVEN_DAYS = 60 * 60 * 24 * 7 * 1000;
 
@@ -59,5 +60,18 @@ export class AuthService {
     } catch {
       res.json(AuthService.getNewTokenFailed());
     }
+  }
+
+  static getToken(req: Request) {
+    const authorization = req.headers.authorization;
+    if (!authorization) {
+      return null;
+    }
+
+    return authorization.split(' ')[1];
+  }
+
+  static isAuth: AuthChecker<Context> = ({ context }) => {
+    return !!context.req.user;
   }
 }
