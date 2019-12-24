@@ -1,5 +1,6 @@
 import 'dotenv/config';
 import 'reflect-metadata';
+import path from 'path';
 import express from 'express';
 import cors from 'cors';
 import jwt from 'express-jwt';
@@ -8,7 +9,6 @@ import { createConnection } from 'typeorm';
 import { ApolloServer } from 'apollo-server-express';
 import { buildSchema } from 'type-graphql';
 
-import { TestResolver, UserResolver } from './resolvers';
 import { AuthService } from './auth';
 
 (async () => {
@@ -30,10 +30,7 @@ import { AuthService } from './auth';
 
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
-      resolvers: [
-        UserResolver,
-        TestResolver,
-      ],
+      resolvers: [path.join(__dirname, 'resolvers/**/*.ts')],
       authChecker: AuthService.isAuth,
     }),
     context: ({req, res}) => ({req, res}),

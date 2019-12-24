@@ -1,21 +1,19 @@
-import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, Unique, ManyToMany, JoinTable } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, BaseEntity } from 'typeorm';
 import { ObjectType, Field } from 'type-graphql';
-import { Workspace } from '../workspace';
 
 @ObjectType()
 @Entity('users')
-@Unique(['email', 'username'])
 export class User extends BaseEntity {
   @Field()
   @PrimaryGeneratedColumn('uuid')
   userId: string;
 
   @Field()
-  @Column()
+  @Column({unique: true})
   username: string;
 
   @Field()
-  @Column()
+  @Column({unique: true})
   email: string;
 
   @Column()
@@ -23,8 +21,4 @@ export class User extends BaseEntity {
 
   @Column('int', {default: 0})
   tokenVersion: number;
-
-  @ManyToMany(() => Workspace)
-  @JoinTable()
-  workspaces: Workspace[];
 }
