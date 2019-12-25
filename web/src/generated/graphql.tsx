@@ -51,6 +51,7 @@ export type MutationRegisterArgs = {
 
 
 export type MutationCreateWorkspaceArgs = {
+  avatar: Scalars['String'],
   name: Scalars['String']
 };
 
@@ -83,7 +84,22 @@ export type Workspace = {
   id: Scalars['String'],
   name: Scalars['String'],
   ownerId: Scalars['String'],
+  avatar: Scalars['String'],
 };
+
+export type CreateWorkspaceMutationVariables = {
+  name: Scalars['String'],
+  avatar: Scalars['String']
+};
+
+
+export type CreateWorkspaceMutation = (
+  { __typename?: 'Mutation' }
+  & { createWorkspace: (
+    { __typename?: 'Workspace' }
+    & Pick<Workspace, 'id' | 'name' | 'ownerId' | 'avatar'>
+  ) }
+);
 
 export type LoginMutationVariables = {
   email: Scalars['String'],
@@ -132,6 +148,42 @@ export type WorkspacesQuery = (
 );
 
 
+export const CreateWorkspaceDocument = gql`
+    mutation CreateWorkspace($name: String!, $avatar: String!) {
+  createWorkspace(name: $name, avatar: $avatar) {
+    id
+    name
+    ownerId
+    avatar
+  }
+}
+    `;
+export type CreateWorkspaceMutationFn = ApolloReactCommon.MutationFunction<CreateWorkspaceMutation, CreateWorkspaceMutationVariables>;
+
+/**
+ * __useCreateWorkspaceMutation__
+ *
+ * To run a mutation, you first call `useCreateWorkspaceMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateWorkspaceMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createWorkspaceMutation, { data, loading, error }] = useCreateWorkspaceMutation({
+ *   variables: {
+ *      name: // value for 'name'
+ *      avatar: // value for 'avatar'
+ *   },
+ * });
+ */
+export function useCreateWorkspaceMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<CreateWorkspaceMutation, CreateWorkspaceMutationVariables>) {
+        return ApolloReactHooks.useMutation<CreateWorkspaceMutation, CreateWorkspaceMutationVariables>(CreateWorkspaceDocument, baseOptions);
+      }
+export type CreateWorkspaceMutationHookResult = ReturnType<typeof useCreateWorkspaceMutation>;
+export type CreateWorkspaceMutationResult = ApolloReactCommon.MutationResult<CreateWorkspaceMutation>;
+export type CreateWorkspaceMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateWorkspaceMutation, CreateWorkspaceMutationVariables>;
 export const LoginDocument = gql`
     mutation Login($email: String!, $password: String!) {
   login(email: $email, password: $password) {

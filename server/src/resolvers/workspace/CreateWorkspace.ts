@@ -11,6 +11,7 @@ export class CreateWorkspaceResolver {
   @Mutation(() => Workspace)
   async createWorkspace(
     @Arg('name') name: string,
+    @Arg('avatar') avatar: string,
     @Ctx() {req}: Context,
   ) {
     if (await isWorkspaceExists(name)) {
@@ -18,7 +19,7 @@ export class CreateWorkspaceResolver {
     }
 
     const {userId: ownerId} = req.user!;
-    const workspace = Workspace.create({name, ownerId});
+    const workspace = Workspace.create({name, avatar, ownerId});
 
     try {
       return await workspace.save();

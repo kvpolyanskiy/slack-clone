@@ -18,6 +18,10 @@ export class Workspace extends BaseEntity {
   @Column({nullable: true})
   ownerId: string;
 
+  @Field()
+  @Column('bytea', {nullable: true})
+  avatar: string;
+
   @ManyToOne(() => User)
   @JoinColumn({name: 'ownerId'})
   owner: User;

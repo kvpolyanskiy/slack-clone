@@ -1,0 +1,8 @@
+mutation CreateWorkspace($name: String!, $avatar: String!) {
+  createWorkspace(name: $name, avatar: $avatar) {
+    id
+    name
+    ownerId
+    avatar
+  }
+}
