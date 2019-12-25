@@ -8,7 +8,7 @@ export const UsernameField: React.FC = () => {
     <Field name="username">
       {({input: {onChange}, meta: {error, touched}}) => (
         <TextField
-          label="Email"
+          label="Username"
           margin={'normal'}
           error={error && touched}
           helperText={error && touched ? error : ''}

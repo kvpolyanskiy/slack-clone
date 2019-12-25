@@ -16,19 +16,25 @@ export type LoginResponse = {
   accessToken: Scalars['String'],
 };
 
+export type Member = {
+   __typename?: 'Member',
+  userId: Scalars['String'],
+  workspaceId: Scalars['String'],
+};
+
 export type Mutation = {
    __typename?: 'Mutation',
-  register: User,
+  addMemberByName: Member,
   login: LoginResponse,
   logout: Scalars['Boolean'],
+  register: User,
   createWorkspace: Workspace,
   removeWorkspace: Workspace,
 };
 
 
-export type MutationRegisterArgs = {
-  password: Scalars['String'],
-  email: Scalars['String'],
+export type MutationAddMemberByNameArgs = {
+  workspaceName: Scalars['String'],
   username: Scalars['String']
 };
 
@@ -36,6 +42,11 @@ export type MutationRegisterArgs = {
 export type MutationLoginArgs = {
   password: Scalars['String'],
   email: Scalars['String']
+};
+
+
+export type MutationRegisterArgs = {
+  input: RegisterInput
 };
 
 
@@ -50,8 +61,14 @@ export type MutationRemoveWorkspaceArgs = {
 
 export type Query = {
    __typename?: 'Query',
-  hello: Scalars['String'],
   workspaces: Array<Workspace>,
+  hello: Scalars['String'],
+};
+
+export type RegisterInput = {
+  email: Scalars['String'],
+  username: Scalars['String'],
+  password: Scalars['String'],
 };
 
 export type User = {
@@ -91,9 +108,7 @@ export type LogoutMutation = (
 );
 
 export type RegisterMutationVariables = {
-  password: Scalars['String'],
-  email: Scalars['String'],
-  username: Scalars['String']
+  input: RegisterInput
 };
 
 
@@ -103,6 +118,17 @@ export type RegisterMutation = (
     { __typename?: 'User' }
     & Pick<User, 'userId' | 'username' | 'email'>
   ) }
+);
+
+export type WorkspacesQueryVariables = {};
+
+
+export type WorkspacesQuery = (
+  { __typename?: 'Query' }
+  & { workspaces: Array<(
+    { __typename?: 'Workspace' }
+    & Pick<Workspace, 'id' | 'name'>
+  )> }
 );
 
 
@@ -169,8 +195,8 @@ export type LogoutMutationHookResult = ReturnType<typeof useLogoutMutation>;
 export type LogoutMutationResult = ApolloReactCommon.MutationResult<LogoutMutation>;
 export type LogoutMutationOptions = ApolloReactCommon.BaseMutationOptions<LogoutMutation, LogoutMutationVariables>;
 export const RegisterDocument = gql`
-    mutation Register($password: String!, $email: String!, $username: String!) {
-  register(username: $username, email: $email, password: $password) {
+    mutation Register($input: RegisterInput!) {
+  register(input: $input) {
     userId
     username
     email
@@ -192,9 +218,7 @@ export type RegisterMutationFn = ApolloReactCommon.MutationFunction<RegisterMuta
  * @example
  * const [registerMutation, { data, loading, error }] = useRegisterMutation({
  *   variables: {
- *      password: // value for 'password'
- *      email: // value for 'email'
- *      username: // value for 'username'
+ *      input: // value for 'input'
  *   },
  * });
  */
@@ -204,3 +228,36 @@ export function useRegisterMutation(baseOptions?: ApolloReactHooks.MutationHookO
 export type RegisterMutationHookResult = ReturnType<typeof useRegisterMutation>;
 export type RegisterMutationResult = ApolloReactCommon.MutationResult<RegisterMutation>;
 export type RegisterMutationOptions = ApolloReactCommon.BaseMutationOptions<RegisterMutation, RegisterMutationVariables>;
+export const WorkspacesDocument = gql`
+    query Workspaces {
+  workspaces {
+    id
+    name
+  }
+}
+    `;
+
+/**
+ * __useWorkspacesQuery__
+ *
+ * To run a query within a React component, call `useWorkspacesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useWorkspacesQuery` returns an object from Apollo Client that contains loading, error, and data properties 
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useWorkspacesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useWorkspacesQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<WorkspacesQuery, WorkspacesQueryVariables>) {
+        return ApolloReactHooks.useQuery<WorkspacesQuery, WorkspacesQueryVariables>(WorkspacesDocument, baseOptions);
+      }
+export function useWorkspacesLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<WorkspacesQuery, WorkspacesQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<WorkspacesQuery, WorkspacesQueryVariables>(WorkspacesDocument, baseOptions);
+        }
+export type WorkspacesQueryHookResult = ReturnType<typeof useWorkspacesQuery>;
+export type WorkspacesLazyQueryHookResult = ReturnType<typeof useWorkspacesLazyQuery>;
+export type WorkspacesQueryResult = ApolloReactCommon.QueryResult<WorkspacesQuery, WorkspacesQueryVariables>;

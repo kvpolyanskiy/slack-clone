@@ -17,7 +17,7 @@ export const Register: React.FC = () => {
       try {
         const {
           data: {register: registered},
-        }: any = await register({variables: {username, email, password}});
+        }: any = await register({variables: {input: {username, email, password}}});
         // TODO: Implement error handling
         if (registered) {
           history.push(routerConfig.defaultRoute);

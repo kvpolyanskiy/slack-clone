@@ -1,11 +1,11 @@
 import React from 'react';
-import { getAccessToken } from '../../apollo-client/cache/access-token';
+import { HomeContainer } from './Home.styles';
+import { Workspaces } from './components';
 
 export const Home: React.FC = () => {
-    
-    return (
-      <div>
-        Home Page
-      </div>
-    );
+  return (
+    <HomeContainer>
+      <Workspaces />
+    </HomeContainer>
+  );
 };
