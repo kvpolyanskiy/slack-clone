@@ -19,7 +19,7 @@ export const Login: React.FC = () => {
       try {
         const {data}: any = await login({variables: {email, password}});
         await setAccessToken(data.login.accessToken);
-        history.push(routerConfig.defaultRoute);
+        history.push(routerConfig.routes.home.path);
       } catch {
         return;
       }

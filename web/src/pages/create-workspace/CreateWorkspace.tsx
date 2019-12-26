@@ -5,7 +5,7 @@ import { Button, Typography } from '@material-ui/core';
 import { CreateWorkspaceContainer, CreateWorkspaceFormForm, CreateWorkspacePaper } from './CreateWorkspace.styles';
 import { useCreateWorkspaceMutation } from '../../generated/graphql';
 import { routerConfig } from '../../router';
-import { WorkspaceNameField } from './components';
+import { WorkspaceNameField, WorkspaceAvatarField } from './components';
 import { createValidator } from '../../validation/createValidator';
 import { validationSchema } from './validationSchema';
 
@@ -13,13 +13,17 @@ export const CreateWorkspace: React.FC = () => {
   const history = useHistory();
   const [createWorkspace, { loading, error }] = useCreateWorkspaceMutation();
 
-  const onSubmit = useCallback(async ({name, avatar}) => {
-    try {
-      await createWorkspace({variables: {name, avatar}});
-      history.push(routerConfig.defaultRoute);
-    } catch {
-      return;
-    }
+  const onSubmit = useCallback(({name, avatar}) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(avatar);
+    reader.onloadend = async () => {
+      try {
+        await createWorkspace({variables: {name, avatar: reader.result as string}});
+        history.push(routerConfig.routes.home.path);
+      } catch {
+        return;
+      }
+    };
   }, [createWorkspace, history]);
 
   const validate = useMemo(() => createValidator(validationSchema), []);
@@ -34,6 +38,7 @@ export const CreateWorkspace: React.FC = () => {
           <CreateWorkspaceFormForm onSubmit={handleSubmit}>
             <CreateWorkspacePaper elevation={0}>
               <WorkspaceNameField />
+              <WorkspaceAvatarField />
               {error && (
                 <Typography color="error">
                   {error}

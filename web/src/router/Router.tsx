@@ -28,7 +28,7 @@ export const Router: React.FC = () => {
   return (
     <BrowserRouter>
       <Switch>
-        {routerConfig.routes.map((route) => (
+        {Object.values(routerConfig.routes).map((route) => (
           route.public
             ? <Route key={route.path} path={route.path} component={route.pageComponent} />
             : <ProtectedRoute key={route.path} path={route.path} component={route.pageComponent} />
@@ -37,7 +37,7 @@ export const Router: React.FC = () => {
           exact
           path="/"
         >
-          <Redirect to={routerConfig.defaultRoute} />
+          <Redirect to={routerConfig.routes.home.path} />
         </Route>
       </Switch>
     </BrowserRouter>

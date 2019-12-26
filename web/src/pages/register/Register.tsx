@@ -20,7 +20,7 @@ export const Register: React.FC = () => {
         }: any = await register({variables: {input: {username, email, password}}});
         // TODO: Implement error handling
         if (registered) {
-          history.push(routerConfig.defaultRoute);
+          history.push(routerConfig.routes.home.path);
         }
       } catch {
         return;

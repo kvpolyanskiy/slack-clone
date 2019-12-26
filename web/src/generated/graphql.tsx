@@ -143,7 +143,7 @@ export type WorkspacesQuery = (
   { __typename?: 'Query' }
   & { workspaces: Array<(
     { __typename?: 'Workspace' }
-    & Pick<Workspace, 'id' | 'name'>
+    & Pick<Workspace, 'id' | 'name' | 'avatar'>
   )> }
 );
 
@@ -285,6 +285,7 @@ export const WorkspacesDocument = gql`
   workspaces {
     id
     name
+    avatar
   }
 }
     `;
