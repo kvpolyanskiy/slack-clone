@@ -10,3 +10,19 @@ services:
     image: adminer
     ports:
       - 8080:8080
+  redis:
+    image: redis:5.0.7
+    ports:
+      - 6379:6379
+    command: ["redis-server", "--appendonly", "yes"]
+    hostname: redis
+    networks:
+      - redis-net
+    volumes:
+      - redis-data:/data
+
+networks:
+  redis-net:
+
+volumes:
+  redis-data:

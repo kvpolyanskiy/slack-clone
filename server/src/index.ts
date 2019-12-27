@@ -14,7 +14,7 @@ import { AuthService } from './auth';
 (async () => {
   const app = express();
   app.use(cors({
-    origin: process.env.CORS_ORIGIN,
+    origin: process.env.CLIENT_HOST,
     credentials: true,
   }));
   app.use(cookieParser());
