@@ -7,20 +7,24 @@ export const WorkspacesContainer = styled.div`
   background: #3F0E40;
 `;
 
-export const WorkspaceButton = styled.div`
+interface WorkspaceButtonProps {
+  selected?: boolean;
+}
+
+export const WorkspaceButton = styled.div<WorkspaceButtonProps>`
   height: 46px;
   width: 46px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 4px solid transparent;
+  border: ${({selected}) => `4px solid ${selected ? '#fff' : 'transparent'}`};
   border-radius: 10px;
-  transition: border .5s ease-out 0.3s;
+  transition: border .3s ease-out .1s;
   margin: 5px;
   color: #fff;
 
   &:hover {
-    border: 4px solid gray;
+    border-color: ${({selected}) => selected ? '#fff' : 'gray'};
   }
 
   img, svg {
