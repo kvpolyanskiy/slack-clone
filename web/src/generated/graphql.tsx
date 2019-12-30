@@ -28,7 +28,9 @@ export type Mutation = {
   login: LoginResponse,
   logout: Scalars['Boolean'],
   register: User,
+  applyWorkspaceInvitation: Scalars['Boolean'],
   createWorkspace: Workspace,
+  inviteToWorkspace: Scalars['Boolean'],
   removeWorkspace: Workspace,
 };
 
@@ -50,9 +52,20 @@ export type MutationRegisterArgs = {
 };
 
 
+export type MutationApplyWorkspaceInvitationArgs = {
+  token: Scalars['String']
+};
+
+
 export type MutationCreateWorkspaceArgs = {
   avatar: Scalars['String'],
   name: Scalars['String']
+};
+
+
+export type MutationInviteToWorkspaceArgs = {
+  workspaceId: Scalars['String'],
+  userId: Scalars['String']
 };
 
 
@@ -64,6 +77,18 @@ export type Query = {
    __typename?: 'Query',
   workspaces: Array<Workspace>,
   hello: Scalars['String'],
+  getUserById: User,
+  getWorkspaceById: Workspace,
+};
+
+
+export type QueryGetUserByIdArgs = {
+  userId: Scalars['String']
+};
+
+
+export type QueryGetWorkspaceByIdArgs = {
+  workspaceId: Scalars['String']
 };
 
 export type RegisterInput = {
@@ -77,6 +102,7 @@ export type User = {
   userId: Scalars['String'],
   username: Scalars['String'],
   email: Scalars['String'],
+  avatar?: Maybe<Scalars['String']>,
 };
 
 export type Workspace = {
@@ -84,7 +110,7 @@ export type Workspace = {
   id: Scalars['String'],
   name: Scalars['String'],
   ownerId: Scalars['String'],
-  avatar: Scalars['String'],
+  avatar?: Maybe<Scalars['String']>,
 };
 
 export type CreateWorkspaceMutationVariables = {
@@ -98,6 +124,32 @@ export type CreateWorkspaceMutation = (
   & { createWorkspace: (
     { __typename?: 'Workspace' }
     & Pick<Workspace, 'id' | 'name' | 'ownerId' | 'avatar'>
+  ) }
+);
+
+export type GetUserByIdQueryVariables = {
+  userId: Scalars['String']
+};
+
+
+export type GetUserByIdQuery = (
+  { __typename?: 'Query' }
+  & { getUserById: (
+    { __typename?: 'User' }
+    & Pick<User, 'userId' | 'username' | 'email' | 'avatar'>
+  ) }
+);
+
+export type GetWorkspaceByIdQueryVariables = {
+  workspaceId: Scalars['String']
+};
+
+
+export type GetWorkspaceByIdQuery = (
+  { __typename?: 'Query' }
+  & { getWorkspaceById: (
+    { __typename?: 'Workspace' }
+    & Pick<Workspace, 'id' | 'name' | 'avatar'>
   ) }
 );
 
@@ -184,6 +236,77 @@ export function useCreateWorkspaceMutation(baseOptions?: ApolloReactHooks.Mutati
 export type CreateWorkspaceMutationHookResult = ReturnType<typeof useCreateWorkspaceMutation>;
 export type CreateWorkspaceMutationResult = ApolloReactCommon.MutationResult<CreateWorkspaceMutation>;
 export type CreateWorkspaceMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateWorkspaceMutation, CreateWorkspaceMutationVariables>;
+export const GetUserByIdDocument = gql`
+    query GetUserById($userId: String!) {
+  getUserById(userId: $userId) {
+    userId
+    username
+    email
+    avatar
+  }
+}
+    `;
+
+/**
+ * __useGetUserByIdQuery__
+ *
+ * To run a query within a React component, call `useGetUserByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetUserByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties 
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetUserByIdQuery({
+ *   variables: {
+ *      userId: // value for 'userId'
+ *   },
+ * });
+ */
+export function useGetUserByIdQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetUserByIdQuery, GetUserByIdQueryVariables>) {
+        return ApolloReactHooks.useQuery<GetUserByIdQuery, GetUserByIdQueryVariables>(GetUserByIdDocument, baseOptions);
+      }
+export function useGetUserByIdLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetUserByIdQuery, GetUserByIdQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<GetUserByIdQuery, GetUserByIdQueryVariables>(GetUserByIdDocument, baseOptions);
+        }
+export type GetUserByIdQueryHookResult = ReturnType<typeof useGetUserByIdQuery>;
+export type GetUserByIdLazyQueryHookResult = ReturnType<typeof useGetUserByIdLazyQuery>;
+export type GetUserByIdQueryResult = ApolloReactCommon.QueryResult<GetUserByIdQuery, GetUserByIdQueryVariables>;
+export const GetWorkspaceByIdDocument = gql`
+    query GetWorkspaceById($workspaceId: String!) {
+  getWorkspaceById(workspaceId: $workspaceId) {
+    id
+    name
+    avatar
+  }
+}
+    `;
+
+/**
+ * __useGetWorkspaceByIdQuery__
+ *
+ * To run a query within a React component, call `useGetWorkspaceByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetWorkspaceByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties 
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetWorkspaceByIdQuery({
+ *   variables: {
+ *      workspaceId: // value for 'workspaceId'
+ *   },
+ * });
+ */
+export function useGetWorkspaceByIdQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetWorkspaceByIdQuery, GetWorkspaceByIdQueryVariables>) {
+        return ApolloReactHooks.useQuery<GetWorkspaceByIdQuery, GetWorkspaceByIdQueryVariables>(GetWorkspaceByIdDocument, baseOptions);
+      }
+export function useGetWorkspaceByIdLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetWorkspaceByIdQuery, GetWorkspaceByIdQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<GetWorkspaceByIdQuery, GetWorkspaceByIdQueryVariables>(GetWorkspaceByIdDocument, baseOptions);
+        }
+export type GetWorkspaceByIdQueryHookResult = ReturnType<typeof useGetWorkspaceByIdQuery>;
+export type GetWorkspaceByIdLazyQueryHookResult = ReturnType<typeof useGetWorkspaceByIdLazyQuery>;
+export type GetWorkspaceByIdQueryResult = ApolloReactCommon.QueryResult<GetWorkspaceByIdQuery, GetWorkspaceByIdQueryVariables>;
 export const LoginDocument = gql`
     mutation Login($email: String!, $password: String!) {
   login(email: $email, password: $password) {

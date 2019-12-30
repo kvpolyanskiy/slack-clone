@@ -1,0 +1,7 @@
+query GetWorkspaceById($workspaceId:String!) {
+  getWorkspaceById(workspaceId:$workspaceId) {
+    id
+    name
+    avatar
+  }
+}

@@ -22,6 +22,7 @@ export const WorkspaceButton = styled.div<WorkspaceButtonProps>`
   transition: border .3s ease-out .1s;
   margin: 5px;
   color: #fff;
+  cursor: pointer;
 
   &:hover {
     border-color: ${({selected}) => selected ? '#fff' : 'gray'};

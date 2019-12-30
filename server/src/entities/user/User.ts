@@ -21,4 +21,9 @@ export class User extends BaseEntity {
 
   @Column('int', {default: 0})
   tokenVersion: number;
+
+  @Field({nullable: true})
+  @Column('text', {nullable: true})
+  avatar: string;
+
 }

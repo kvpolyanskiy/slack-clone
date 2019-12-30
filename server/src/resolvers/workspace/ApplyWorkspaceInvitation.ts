@@ -18,7 +18,7 @@ export class ApplyWorkspaceInvitationResolver {
 
     await Member.create({userId, workspaceId}).save();
     await redis.del(token);
-    
+
     return true;
   }
 }
