@@ -1,0 +1,6 @@
+mutation ApplyWorkspaceInvitation($token:String!) {
+  applyWorkspaceInvitation(token:$token) {
+    name
+    avatar
+  }
+}

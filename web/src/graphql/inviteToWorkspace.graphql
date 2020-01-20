@@ -1,0 +1,3 @@
+mutation InviteToWorkspace($email:String!, $workspaceId:String!) {
+  inviteToWorkspace(email: $email, workspaceId: $workspaceId)
+}

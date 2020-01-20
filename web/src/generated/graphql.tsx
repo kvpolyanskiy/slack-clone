@@ -28,7 +28,7 @@ export type Mutation = {
   login: LoginResponse,
   logout: Scalars['Boolean'],
   register: User,
-  applyWorkspaceInvitation: Scalars['Boolean'],
+  applyWorkspaceInvitation: Workspace,
   createWorkspace: Workspace,
   inviteToWorkspace: Scalars['Boolean'],
   removeWorkspace: Workspace,
@@ -65,7 +65,7 @@ export type MutationCreateWorkspaceArgs = {
 
 export type MutationInviteToWorkspaceArgs = {
   workspaceId: Scalars['String'],
-  userId: Scalars['String']
+  email: Scalars['String']
 };
 
 
@@ -113,6 +113,19 @@ export type Workspace = {
   avatar?: Maybe<Scalars['String']>,
 };
 
+export type ApplyWorkspaceInvitationMutationVariables = {
+  token: Scalars['String']
+};
+
+
+export type ApplyWorkspaceInvitationMutation = (
+  { __typename?: 'Mutation' }
+  & { applyWorkspaceInvitation: (
+    { __typename?: 'Workspace' }
+    & Pick<Workspace, 'name' | 'avatar'>
+  ) }
+);
+
 export type CreateWorkspaceMutationVariables = {
   name: Scalars['String'],
   avatar: Scalars['String']
@@ -151,6 +164,17 @@ export type GetWorkspaceByIdQuery = (
     { __typename?: 'Workspace' }
     & Pick<Workspace, 'id' | 'name' | 'avatar'>
   ) }
+);
+
+export type InviteToWorkspaceMutationVariables = {
+  email: Scalars['String'],
+  workspaceId: Scalars['String']
+};
+
+
+export type InviteToWorkspaceMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'inviteToWorkspace'>
 );
 
 export type LoginMutationVariables = {
@@ -200,6 +224,39 @@ export type WorkspacesQuery = (
 );
 
 
+export const ApplyWorkspaceInvitationDocument = gql`
+    mutation ApplyWorkspaceInvitation($token: String!) {
+  applyWorkspaceInvitation(token: $token) {
+    name
+    avatar
+  }
+}
+    `;
+export type ApplyWorkspaceInvitationMutationFn = ApolloReactCommon.MutationFunction<ApplyWorkspaceInvitationMutation, ApplyWorkspaceInvitationMutationVariables>;
+
+/**
+ * __useApplyWorkspaceInvitationMutation__
+ *
+ * To run a mutation, you first call `useApplyWorkspaceInvitationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useApplyWorkspaceInvitationMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [applyWorkspaceInvitationMutation, { data, loading, error }] = useApplyWorkspaceInvitationMutation({
+ *   variables: {
+ *      token: // value for 'token'
+ *   },
+ * });
+ */
+export function useApplyWorkspaceInvitationMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<ApplyWorkspaceInvitationMutation, ApplyWorkspaceInvitationMutationVariables>) {
+        return ApolloReactHooks.useMutation<ApplyWorkspaceInvitationMutation, ApplyWorkspaceInvitationMutationVariables>(ApplyWorkspaceInvitationDocument, baseOptions);
+      }
+export type ApplyWorkspaceInvitationMutationHookResult = ReturnType<typeof useApplyWorkspaceInvitationMutation>;
+export type ApplyWorkspaceInvitationMutationResult = ApolloReactCommon.MutationResult<ApplyWorkspaceInvitationMutation>;
+export type ApplyWorkspaceInvitationMutationOptions = ApolloReactCommon.BaseMutationOptions<ApplyWorkspaceInvitationMutation, ApplyWorkspaceInvitationMutationVariables>;
 export const CreateWorkspaceDocument = gql`
     mutation CreateWorkspace($name: String!, $avatar: String!) {
   createWorkspace(name: $name, avatar: $avatar) {
@@ -307,6 +364,37 @@ export function useGetWorkspaceByIdLazyQuery(baseOptions?: ApolloReactHooks.Lazy
 export type GetWorkspaceByIdQueryHookResult = ReturnType<typeof useGetWorkspaceByIdQuery>;
 export type GetWorkspaceByIdLazyQueryHookResult = ReturnType<typeof useGetWorkspaceByIdLazyQuery>;
 export type GetWorkspaceByIdQueryResult = ApolloReactCommon.QueryResult<GetWorkspaceByIdQuery, GetWorkspaceByIdQueryVariables>;
+export const InviteToWorkspaceDocument = gql`
+    mutation InviteToWorkspace($email: String!, $workspaceId: String!) {
+  inviteToWorkspace(email: $email, workspaceId: $workspaceId)
+}
+    `;
+export type InviteToWorkspaceMutationFn = ApolloReactCommon.MutationFunction<InviteToWorkspaceMutation, InviteToWorkspaceMutationVariables>;
+
+/**
+ * __useInviteToWorkspaceMutation__
+ *
+ * To run a mutation, you first call `useInviteToWorkspaceMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useInviteToWorkspaceMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [inviteToWorkspaceMutation, { data, loading, error }] = useInviteToWorkspaceMutation({
+ *   variables: {
+ *      email: // value for 'email'
+ *      workspaceId: // value for 'workspaceId'
+ *   },
+ * });
+ */
+export function useInviteToWorkspaceMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<InviteToWorkspaceMutation, InviteToWorkspaceMutationVariables>) {
+        return ApolloReactHooks.useMutation<InviteToWorkspaceMutation, InviteToWorkspaceMutationVariables>(InviteToWorkspaceDocument, baseOptions);
+      }
+export type InviteToWorkspaceMutationHookResult = ReturnType<typeof useInviteToWorkspaceMutation>;
+export type InviteToWorkspaceMutationResult = ApolloReactCommon.MutationResult<InviteToWorkspaceMutation>;
+export type InviteToWorkspaceMutationOptions = ApolloReactCommon.BaseMutationOptions<InviteToWorkspaceMutation, InviteToWorkspaceMutationVariables>;
 export const LoginDocument = gql`
     mutation Login($email: String!, $password: String!) {
   login(email: $email, password: $password) {

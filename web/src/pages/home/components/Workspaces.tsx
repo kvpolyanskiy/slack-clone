@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { Tooltip } from '@material-ui/core';
 import {
   PeopleOutline as PeopleIcon,
@@ -16,6 +16,12 @@ export const Workspaces: React.FC = () => {
   const history = useHistory();
   const selectedWorkspace = useSelectedWorkspaceQuery();
   const selectWorkspace = useSelectWorkspaceMutation();
+
+  useEffect(() => {
+    if (!selectedWorkspace && data && data.workspaces.length) {
+      selectWorkspace(data.workspaces[0].id);
+    }
+  }, [data, selectedWorkspace, selectWorkspace]);
 
   const onAddNewWorkspace = useCallback(
     () => history.push(routerConfig.routes.createWorkspace.path),

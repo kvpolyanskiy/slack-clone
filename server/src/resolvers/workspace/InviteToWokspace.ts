@@ -6,15 +6,15 @@ import { User, Workspace } from '../../entities';
 export class InviteToWorkspaceResolver {
   @Mutation(() => Boolean)
   async inviteToWorkspace(
-    @Arg('userId') userId: string,
+    @Arg('email') email: string,
     @Arg('workspaceId') workspaceId: string,
   ): Promise<boolean> {
-    const user = await User.findOneOrFail({userId});
+    const user = await User.findOneOrFail({email});
     const workspace = await Workspace.findOneOrFail({id: workspaceId});
 
     await sendEmail(
       user.email,
-      await createWorkspaceInvitationUrl(userId, workspaceId),
+      await createWorkspaceInvitationUrl(user.userId, workspaceId),
       `Invitation to ${workspace.name} workspace`,
     );
 

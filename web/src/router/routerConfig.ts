@@ -1,4 +1,4 @@
-import { Home, Register, Login, CreateWorkspace } from '../pages';
+import { Home, Register, Login, CreateWorkspace, WorkspaceInvitation } from '../pages';
 
 interface Route {
   path: string;
@@ -28,6 +28,11 @@ export const routerConfig: IRouteConfig = {
     login: {
       path: '/login',
       pageComponent: Login,
+      public: true,
+    },
+    workspaceInvitation: {
+      path: '/workspace-invitation/:id',
+      pageComponent: WorkspaceInvitation,
       public: true,
     },
   },
