@@ -5,6 +5,7 @@ import express from 'express';
 import cors from 'cors';
 import jwt from 'express-jwt';
 import cookieParser from 'cookie-parser';
+import http from 'http';
 import { createConnection } from 'typeorm';
 import { ApolloServer } from 'apollo-server-express';
 import { buildSchema } from 'type-graphql';
@@ -34,11 +35,26 @@ import { AuthService } from './auth';
       authChecker: AuthService.isAuth,
     }),
     context: ({req, res}) => ({req, res}),
+    subscriptions: {
+      onConnect: async ({authorization}: any) => {
+        try {
+          const decodedAccessToken = await AuthService.validateAccessToken(authorization);
+          if (decodedAccessToken) {
+            return decodedAccessToken;
+          }
+        } catch {
+          throw new Error('Not authorized.');
+        }
+      },
+    },
   });
 
   apolloServer.applyMiddleware({app, cors: false});
 
-  app.listen({port: process.env.PORT}, () => {
+  const httpServer = http.createServer(app);
+  apolloServer.installSubscriptionHandlers(httpServer);
+
+  httpServer.listen({port: process.env.PORT}, () => {
     console.log(`Server ready at port: ${process.env.PORT}`);
   });
 })();

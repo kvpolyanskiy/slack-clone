@@ -4,7 +4,7 @@ import { Workspace, Member } from '../../entities';
 import { Context } from '../../types';
 
 @Resolver()
-export class CreateWorkspaceResolver {
+export class WorkspacesResolver {
   @Authorized()
   @Query(() => [Workspace])
   async workspaces(

@@ -1,17 +1,21 @@
 import { Request, Response } from 'express';
 import { AuthChecker } from 'type-graphql';
-import { sign, verify } from 'jsonwebtoken';
+import { sign, verify, VerifyErrors } from 'jsonwebtoken';
 import { User } from '../entities';
 import { Token, TokenResponse, Context } from '../types';
 
 const SEVEN_DAYS = 60 * 60 * 24 * 7 * 1000;
 
 export class AuthService {
+  static getTokenFromAuthorization(authorization: string) {
+    return authorization.split(' ')[1];
+  }
+
   static createAccessToken({userId, email, username}: User) {
     return sign(
       {userId, email, username},
       process.env.ACCESS_TOKEN_SECRET!,
-      {expiresIn: '15m'},
+      {expiresIn: '60m'},
     );
   }
 
@@ -68,10 +72,23 @@ export class AuthService {
       return null;
     }
 
-    return authorization.split(' ')[1];
+    return AuthService.getTokenFromAuthorization(authorization);
   }
 
   static isAuth: AuthChecker<Context> = ({ context }) => {
     return !!context.req.user;
+  }
+
+  static validateAccessToken(authorization: string) {
+    const token = AuthService.getTokenFromAuthorization(authorization);
+
+    return new Promise((resolve, reject) => {
+      verify(token, process.env.ACCESS_TOKEN_SECRET!, (err: VerifyErrors, decoded: any) => {
+        if (err) {
+          reject(err);
+        }
+        resolve(decoded);
+      });
+    });
   }
 }
