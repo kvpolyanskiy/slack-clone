@@ -14,7 +14,6 @@ export class Message extends BaseEntity {
   @CreateDateColumn()
   createdDate: Date;
 
-  @Field()
   @Column()
   userId: string;
 
@@ -26,11 +25,12 @@ export class Message extends BaseEntity {
   @Column()
   text: string;
 
-  @ManyToOne(() => User)
-  @JoinColumn({name: 'userId'})
-  user: User;
-
-  @ManyToOne(() => Channel)
+  @ManyToOne(() => Channel, (channel) => channel.messages)
   @JoinColumn({name: 'channelId'})
   channel: Channel;
+
+  @Field(() => User, {nullable: true})
+  @ManyToOne(() => User)
+  @JoinColumn({name: 'userId'})
+  user: Promise<User>;
 }

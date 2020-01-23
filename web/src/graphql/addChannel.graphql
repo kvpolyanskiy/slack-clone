@@ -1,0 +1,6 @@
+mutation AddChannel($input: AddChannelInput!) {
+  addChannel(input: $input) {
+    id
+    name
+  }
+}

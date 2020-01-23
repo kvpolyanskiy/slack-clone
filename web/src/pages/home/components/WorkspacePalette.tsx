@@ -5,6 +5,7 @@ import { WorkspacePaletteContainer, WorkspacePaletteBody, WorkspacePaletteHeader
 import { Typography } from '@material-ui/core';
 import { useGetLoggedUser } from '../../../hooks/users';
 import { UserMenu } from './user-menu';
+import { Channels } from './channels';
 
 export const WorkspacePalette: React.FC = () => {
   const {user} = useGetLoggedUser();
@@ -28,6 +29,7 @@ export const WorkspacePalette: React.FC = () => {
           <KeyboardArrowDown />
         </WorkspacePaletteHeader>
         <UserMenu onClose={onCloseUserMenu} anchorEl={anchorEl} />
+        <Channels />
       </WorkspacePaletteBody>
     </WorkspacePaletteContainer>
   );

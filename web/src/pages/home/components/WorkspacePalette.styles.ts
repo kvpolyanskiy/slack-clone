@@ -9,11 +9,12 @@ export const WorkspacePaletteContainer = styled.div`
 export const WorkspacePaletteBody = styled.div`
   display: flex;
   flex-direction: column;
-  padding: 10px;
+  padding: 10px 0;
 `;
 
 export const WorkspacePaletteHeader = styled.div`
   display: flex;
   align-items: center;
   cursor: pointer;
+  padding: 0 10px;
 `;

@@ -1,0 +1,6 @@
+query Channels($workspaceId:String!) {
+  channels(workspaceId:$workspaceId) {
+    id
+    name
+  }
+}

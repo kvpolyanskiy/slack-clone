@@ -20,7 +20,7 @@ export class ChannelsResolver {
 
     const member = await Member.findOne({userId: user?.userId, workspaceId});
 
-    if (!member) {
+    if (!member && workspace.ownerId !== user?.userId) {
       throw new UserInputError(`You don't belong workspace: ${workspace.name}`);
     }
 

@@ -8,5 +8,6 @@ cache.writeData({
   data: {
     accessToken: null,
     selectedWorkspace: null,
+    selectedChannel: null,
   },
 });

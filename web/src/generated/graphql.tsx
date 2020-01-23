@@ -9,7 +9,28 @@ export type Scalars = {
   Boolean: boolean,
   Int: number,
   Float: number,
+  /** The javascript `Date` as string. Type represents date and time as the ISO Date string. */
+  DateTime: any,
 };
+
+export type AddChannelInput = {
+  name: Scalars['String'],
+  workspaceId: Scalars['String'],
+};
+
+export type AddMessageInput = {
+  text: Scalars['String'],
+  channelId: Scalars['String'],
+};
+
+export type Channel = {
+   __typename?: 'Channel',
+  id: Scalars['String'],
+  name: Scalars['String'],
+  workspaceId: Scalars['String'],
+  messages: Array<Message>,
+};
+
 
 export type LoginResponse = {
    __typename?: 'LoginResponse',
@@ -22,9 +43,21 @@ export type Member = {
   workspaceId: Scalars['String'],
 };
 
+export type Message = {
+   __typename?: 'Message',
+  id: Scalars['String'],
+  createdDate: Scalars['DateTime'],
+  channelId: Scalars['String'],
+  text: Scalars['String'],
+  user?: Maybe<User>,
+};
+
 export type Mutation = {
    __typename?: 'Mutation',
+  addChannel: Channel,
+  removeChannel?: Maybe<Channel>,
   addMemberByName: Member,
+  addMessage: Message,
   login: LoginResponse,
   logout: Scalars['Boolean'],
   register: User,
@@ -35,9 +68,24 @@ export type Mutation = {
 };
 
 
+export type MutationAddChannelArgs = {
+  input: AddChannelInput
+};
+
+
+export type MutationRemoveChannelArgs = {
+  id: Scalars['String']
+};
+
+
 export type MutationAddMemberByNameArgs = {
   workspaceName: Scalars['String'],
   username: Scalars['String']
+};
+
+
+export type MutationAddMessageArgs = {
+  input: AddMessageInput
 };
 
 
@@ -75,10 +123,22 @@ export type MutationRemoveWorkspaceArgs = {
 
 export type Query = {
    __typename?: 'Query',
+  channels: Array<Channel>,
   workspaces: Array<Workspace>,
+  messages: Array<Message>,
   hello: Scalars['String'],
   getUserById: User,
   getWorkspaceById: Workspace,
+};
+
+
+export type QueryChannelsArgs = {
+  workspaceId: Scalars['String']
+};
+
+
+export type QueryMessagesArgs = {
+  channelId: Scalars['String']
 };
 
 
@@ -97,6 +157,16 @@ export type RegisterInput = {
   password: Scalars['String'],
 };
 
+export type Subscription = {
+   __typename?: 'Subscription',
+  messageAdded: Message,
+};
+
+
+export type SubscriptionMessageAddedArgs = {
+  channelId: Scalars['String']
+};
+
 export type User = {
    __typename?: 'User',
   userId: Scalars['String'],
@@ -113,6 +183,36 @@ export type Workspace = {
   avatar?: Maybe<Scalars['String']>,
 };
 
+export type AddChannelMutationVariables = {
+  input: AddChannelInput
+};
+
+
+export type AddChannelMutation = (
+  { __typename?: 'Mutation' }
+  & { addChannel: (
+    { __typename?: 'Channel' }
+    & Pick<Channel, 'id' | 'name'>
+  ) }
+);
+
+export type AddMessageMutationVariables = {
+  input: AddMessageInput
+};
+
+
+export type AddMessageMutation = (
+  { __typename?: 'Mutation' }
+  & { addMessage: (
+    { __typename?: 'Message' }
+    & Pick<Message, 'id' | 'text' | 'createdDate'>
+    & { user: Maybe<(
+      { __typename?: 'User' }
+      & Pick<User, 'userId' | 'username' | 'avatar'>
+    )> }
+  ) }
+);
+
 export type ApplyWorkspaceInvitationMutationVariables = {
   token: Scalars['String']
 };
@@ -124,6 +224,19 @@ export type ApplyWorkspaceInvitationMutation = (
     { __typename?: 'Workspace' }
     & Pick<Workspace, 'name' | 'avatar'>
   ) }
+);
+
+export type ChannelsQueryVariables = {
+  workspaceId: Scalars['String']
+};
+
+
+export type ChannelsQuery = (
+  { __typename?: 'Query' }
+  & { channels: Array<(
+    { __typename?: 'Channel' }
+    & Pick<Channel, 'id' | 'name'>
+  )> }
 );
 
 export type CreateWorkspaceMutationVariables = {
@@ -199,6 +312,40 @@ export type LogoutMutation = (
   & Pick<Mutation, 'logout'>
 );
 
+export type MessageAddedSubscriptionVariables = {
+  channelId: Scalars['String']
+};
+
+
+export type MessageAddedSubscription = (
+  { __typename?: 'Subscription' }
+  & { messageAdded: (
+    { __typename?: 'Message' }
+    & Pick<Message, 'id' | 'text' | 'createdDate' | 'channelId'>
+    & { user: Maybe<(
+      { __typename?: 'User' }
+      & Pick<User, 'userId' | 'username' | 'avatar'>
+    )> }
+  ) }
+);
+
+export type MessagesQueryVariables = {
+  channelId: Scalars['String']
+};
+
+
+export type MessagesQuery = (
+  { __typename?: 'Query' }
+  & { messages: Array<(
+    { __typename?: 'Message' }
+    & Pick<Message, 'id' | 'text' | 'createdDate'>
+    & { user: Maybe<(
+      { __typename?: 'User' }
+      & Pick<User, 'userId' | 'username' | 'avatar'>
+    )> }
+  )> }
+);
+
 export type RegisterMutationVariables = {
   input: RegisterInput
 };
@@ -224,6 +371,78 @@ export type WorkspacesQuery = (
 );
 
 
+export const AddChannelDocument = gql`
+    mutation AddChannel($input: AddChannelInput!) {
+  addChannel(input: $input) {
+    id
+    name
+  }
+}
+    `;
+export type AddChannelMutationFn = ApolloReactCommon.MutationFunction<AddChannelMutation, AddChannelMutationVariables>;
+
+/**
+ * __useAddChannelMutation__
+ *
+ * To run a mutation, you first call `useAddChannelMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddChannelMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addChannelMutation, { data, loading, error }] = useAddChannelMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useAddChannelMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<AddChannelMutation, AddChannelMutationVariables>) {
+        return ApolloReactHooks.useMutation<AddChannelMutation, AddChannelMutationVariables>(AddChannelDocument, baseOptions);
+      }
+export type AddChannelMutationHookResult = ReturnType<typeof useAddChannelMutation>;
+export type AddChannelMutationResult = ApolloReactCommon.MutationResult<AddChannelMutation>;
+export type AddChannelMutationOptions = ApolloReactCommon.BaseMutationOptions<AddChannelMutation, AddChannelMutationVariables>;
+export const AddMessageDocument = gql`
+    mutation AddMessage($input: AddMessageInput!) {
+  addMessage(input: $input) {
+    id
+    text
+    createdDate
+    user {
+      userId
+      username
+      avatar
+    }
+  }
+}
+    `;
+export type AddMessageMutationFn = ApolloReactCommon.MutationFunction<AddMessageMutation, AddMessageMutationVariables>;
+
+/**
+ * __useAddMessageMutation__
+ *
+ * To run a mutation, you first call `useAddMessageMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddMessageMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addMessageMutation, { data, loading, error }] = useAddMessageMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useAddMessageMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<AddMessageMutation, AddMessageMutationVariables>) {
+        return ApolloReactHooks.useMutation<AddMessageMutation, AddMessageMutationVariables>(AddMessageDocument, baseOptions);
+      }
+export type AddMessageMutationHookResult = ReturnType<typeof useAddMessageMutation>;
+export type AddMessageMutationResult = ApolloReactCommon.MutationResult<AddMessageMutation>;
+export type AddMessageMutationOptions = ApolloReactCommon.BaseMutationOptions<AddMessageMutation, AddMessageMutationVariables>;
 export const ApplyWorkspaceInvitationDocument = gql`
     mutation ApplyWorkspaceInvitation($token: String!) {
   applyWorkspaceInvitation(token: $token) {
@@ -257,6 +476,40 @@ export function useApplyWorkspaceInvitationMutation(baseOptions?: ApolloReactHoo
 export type ApplyWorkspaceInvitationMutationHookResult = ReturnType<typeof useApplyWorkspaceInvitationMutation>;
 export type ApplyWorkspaceInvitationMutationResult = ApolloReactCommon.MutationResult<ApplyWorkspaceInvitationMutation>;
 export type ApplyWorkspaceInvitationMutationOptions = ApolloReactCommon.BaseMutationOptions<ApplyWorkspaceInvitationMutation, ApplyWorkspaceInvitationMutationVariables>;
+export const ChannelsDocument = gql`
+    query Channels($workspaceId: String!) {
+  channels(workspaceId: $workspaceId) {
+    id
+    name
+  }
+}
+    `;
+
+/**
+ * __useChannelsQuery__
+ *
+ * To run a query within a React component, call `useChannelsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useChannelsQuery` returns an object from Apollo Client that contains loading, error, and data properties 
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useChannelsQuery({
+ *   variables: {
+ *      workspaceId: // value for 'workspaceId'
+ *   },
+ * });
+ */
+export function useChannelsQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<ChannelsQuery, ChannelsQueryVariables>) {
+        return ApolloReactHooks.useQuery<ChannelsQuery, ChannelsQueryVariables>(ChannelsDocument, baseOptions);
+      }
+export function useChannelsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<ChannelsQuery, ChannelsQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<ChannelsQuery, ChannelsQueryVariables>(ChannelsDocument, baseOptions);
+        }
+export type ChannelsQueryHookResult = ReturnType<typeof useChannelsQuery>;
+export type ChannelsLazyQueryHookResult = ReturnType<typeof useChannelsLazyQuery>;
+export type ChannelsQueryResult = ApolloReactCommon.QueryResult<ChannelsQuery, ChannelsQueryVariables>;
 export const CreateWorkspaceDocument = gql`
     mutation CreateWorkspace($name: String!, $avatar: String!) {
   createWorkspace(name: $name, avatar: $avatar) {
@@ -457,6 +710,84 @@ export function useLogoutMutation(baseOptions?: ApolloReactHooks.MutationHookOpt
 export type LogoutMutationHookResult = ReturnType<typeof useLogoutMutation>;
 export type LogoutMutationResult = ApolloReactCommon.MutationResult<LogoutMutation>;
 export type LogoutMutationOptions = ApolloReactCommon.BaseMutationOptions<LogoutMutation, LogoutMutationVariables>;
+export const MessageAddedDocument = gql`
+    subscription MessageAdded($channelId: String!) {
+  messageAdded(channelId: $channelId) {
+    id
+    text
+    createdDate
+    channelId
+    createdDate
+    user {
+      userId
+      username
+      avatar
+    }
+  }
+}
+    `;
+
+/**
+ * __useMessageAddedSubscription__
+ *
+ * To run a query within a React component, call `useMessageAddedSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useMessageAddedSubscription` returns an object from Apollo Client that contains loading, error, and data properties 
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useMessageAddedSubscription({
+ *   variables: {
+ *      channelId: // value for 'channelId'
+ *   },
+ * });
+ */
+export function useMessageAddedSubscription(baseOptions?: ApolloReactHooks.SubscriptionHookOptions<MessageAddedSubscription, MessageAddedSubscriptionVariables>) {
+        return ApolloReactHooks.useSubscription<MessageAddedSubscription, MessageAddedSubscriptionVariables>(MessageAddedDocument, baseOptions);
+      }
+export type MessageAddedSubscriptionHookResult = ReturnType<typeof useMessageAddedSubscription>;
+export type MessageAddedSubscriptionResult = ApolloReactCommon.SubscriptionResult<MessageAddedSubscription>;
+export const MessagesDocument = gql`
+    query Messages($channelId: String!) {
+  messages(channelId: $channelId) {
+    id
+    text
+    createdDate
+    user {
+      userId
+      username
+      avatar
+    }
+  }
+}
+    `;
+
+/**
+ * __useMessagesQuery__
+ *
+ * To run a query within a React component, call `useMessagesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMessagesQuery` returns an object from Apollo Client that contains loading, error, and data properties 
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useMessagesQuery({
+ *   variables: {
+ *      channelId: // value for 'channelId'
+ *   },
+ * });
+ */
+export function useMessagesQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<MessagesQuery, MessagesQueryVariables>) {
+        return ApolloReactHooks.useQuery<MessagesQuery, MessagesQueryVariables>(MessagesDocument, baseOptions);
+      }
+export function useMessagesLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<MessagesQuery, MessagesQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<MessagesQuery, MessagesQueryVariables>(MessagesDocument, baseOptions);
+        }
+export type MessagesQueryHookResult = ReturnType<typeof useMessagesQuery>;
+export type MessagesLazyQueryHookResult = ReturnType<typeof useMessagesLazyQuery>;
+export type MessagesQueryResult = ApolloReactCommon.QueryResult<MessagesQuery, MessagesQueryVariables>;
 export const RegisterDocument = gql`
     mutation Register($input: RegisterInput!) {
   register(input: $input) {
