@@ -8,7 +8,7 @@ import { MessagesContainer, MessageHeader, MessageBody, AvatarContainer, Message
 export const Messages: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const channelId = useSelectedChannelQuery();
-  const {data} = useMessagesQuery({variables: {channelId}});
+  const {data} = useMessagesQuery({variables: {channelId}, fetchPolicy: 'network-only'});
   const {data: messageAddedData} = useMessageAddedSubscription({variables: {channelId}});
 
   useEffect(() => {
